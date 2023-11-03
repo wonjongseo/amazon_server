@@ -7,6 +7,7 @@ const { auth } = require("../middlewares/auth");
 const authRoute = express.Router();
 
 authRoute.post("/api/user", async (req, res, next) => {
+  console.log("asdas");
   try {
     const { name, email, password } = req.body;
     console.log("req.body: ", req.body);
