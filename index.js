@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const morgan = require("morgan");
 const authRoute = require("./routes/auth");
 const productRouter = require("./routes/admin");
+const userRouter = require("./routes/user");
 
 const PORT = process.env.PORT;
 const app = express();
@@ -19,6 +20,7 @@ app.use(
 );
 
 app.use(authRoute);
+app.use(userRouter);
 app.use(productRouter);
 
 mongoose
