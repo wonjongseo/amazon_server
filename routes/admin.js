@@ -2,8 +2,8 @@ const express = require("express");
 const Product = require("../models/product");
 const { admin } = require("../middlewares/admin");
 
-const productRouter = express.Router();
-productRouter.get("/admin/categories", (req, res, next) => {
+const adminRouter = express.Router();
+adminRouter.get("/admin/categories", (req, res, next) => {
   const productCategories = [
     "Mobiles",
     "Essentials",
@@ -17,7 +17,7 @@ productRouter.get("/admin/categories", (req, res, next) => {
   });
 });
 
-productRouter.get("/admin/products", async (req, res) => {
+adminRouter.get("/admin/products", async (req, res) => {
   try {
     const products = await Product.find();
 
@@ -30,7 +30,7 @@ productRouter.get("/admin/products", async (req, res) => {
   }
 });
 
-productRouter.delete("/admin/delete-product", admin, async (req, res, next) => {
+adminRouter.delete("/admin/delete-product", admin, async (req, res, next) => {
   try {
     const { id } = req.body;
     const product = await Product.findById(id);
@@ -51,7 +51,7 @@ productRouter.delete("/admin/delete-product", admin, async (req, res, next) => {
   }
 });
 
-productRouter.post("/admin/add-product", admin, async (req, res) => {
+adminRouter.post("/admin/add-product", admin, async (req, res) => {
   try {
     const { name, description, price, quantity, category, images } = req.body;
     console.log("req.body: ", req.body);
@@ -91,4 +91,4 @@ productRouter.post("/admin/add-product", admin, async (req, res) => {
   }
 });
 
-module.exports = productRouter;
+module.exports = adminRouter;
