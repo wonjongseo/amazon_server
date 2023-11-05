@@ -1,7 +1,33 @@
 const express = require("express");
-const Product = require("../models/product");
+const { Product } = require("../models/product");
 const { auth } = require("../middlewares/auth");
 const productRouter = express.Router();
+
+productRouter.get("/api/deal-of-day", auth, async (req, res) => {
+  try {
+    const products = await Product.find();
+    console.log("products: ", products);
+    const product = products.sort((a, b) => {
+      let aSum = 0;
+      let bSum = 0;
+
+      for (let i = 0; i < a.ratings.length; i++) {
+        aSum += a.ratings[i].rating;
+      }
+
+      for (let i = 0; i < b.ratings.length; i++) {
+        bSum += b.ratings[i].rating;
+      }
+
+      return aSum < bSum ? 1 : -1;
+    })[0];
+
+    return res.status(200).json(product);
+  } catch (error) {
+    console.log("error.message: ", error.message);
+    return res.status(500).json({ error: error.message });
+  }
+});
 
 productRouter.post("/api/rate-product", auth, async (req, res, next) => {
   try {
@@ -32,7 +58,7 @@ productRouter.post("/api/rate-product", auth, async (req, res, next) => {
 
 productRouter.get("/api/products", auth, async (req, res, next) => {
   try {
-    const { query } = req.query;
+    let { query } = req.query;
 
     console.log("query: ", query);
 

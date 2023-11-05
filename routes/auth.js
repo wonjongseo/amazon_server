@@ -12,6 +12,7 @@ authRoute.post("/api/user", async (req, res, next) => {
     const { name, email, password } = req.body;
     console.log("req.body: ", req.body);
     const existingUesr = await User.findOne({ email });
+
     if (existingUesr) {
       return res.status(400).json({
         msg: "User with same email already exist.",
@@ -72,7 +73,7 @@ authRoute.post("/tokenIsValid", async (req, res, next) => {
     if (!verified) return res.json(false);
 
     const user = await User.findById(verified.id);
-
+    console.log("user: ", user);
     if (!user) return res.json(false);
     return res.json(true);
   } catch (error) {
