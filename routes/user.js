@@ -5,16 +5,30 @@ const { auth } = require("../middlewares/auth");
 
 const userRouter = express.Router();
 
-// userRouter.get('/api/cart', auth , async (req,res) => {
-//  try {
-//  const user = await User.findById(req.userId);
+userRouter.delete(
+  "/api/remove-from-cart/:productId",
+  auth,
+  async (req, res) => {
+    try {
+      const { productId } = req.params;
+      const { userId } = req;
+      let user = await User.findById({ _id: userId });
 
-//  }catch(error) {
-//  console.log('error.message: ', error.message);
-//   return res.status(500).json({ error: error.message });
-//  }
-// })
+      for (let i = 0; i < user.cart.length; i++) {
+        if (user.cart[i].product._id == productId) {
+          user.cart.splice(i, 1);
+          break;
+        }
+      }
+      user = await user.save();
 
+      return res.status(200).json(user);
+    } catch (error) {
+      console.log("error.message: ", error.message);
+      return res.status(500).json({ error: error.message });
+    }
+  }
+);
 userRouter.post("/api/add-to-cart", auth, async (req, res) => {
   try {
     const { userId } = req;
@@ -43,7 +57,7 @@ userRouter.post("/api/add-to-cart", auth, async (req, res) => {
       let isProductFound = false;
       for (let i = 0; i < user.cart.length; i++) {
         if (user.cart[i].product._id.equals(product._id)) {
-          user.cart[i].quantity++;
+          user.cart[i].quantity += quantity;
           isProductFound = true;
           break;
         }
